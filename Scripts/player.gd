@@ -4,7 +4,7 @@ extends CharacterBody2D
 @export var speed = 400.0
 @export var brake_speed = 400
 @export var jump_velocity = -400.0
-@onready var animatedSprite = $Sprite
+@onready var animatedSprite = $SpriteOld
 @onready var standing_collision = $StandingHitBox
 @onready var crouching_collision = $CrouchingHitBox
 # Get the gravity from the project settings to be synced with RigidBody nodes.
@@ -15,24 +15,21 @@ var is_crouching = false
 var actions = {"left": false, "right": false, "crouch": false, "jump": false}
 var animations = {"idle": false, "run": false, "jump_start": false, "jump_end": false}
 var animation_flip = false
-var is_landing = false
+
 
 
 func _ready():
 	crouching_collision.disabled = true
 	animatedSprite.play("idle")
 	
+	
 func _physics_process(delta):
 	if is_on_floor():
 		air_jump_current = air_jump_total
 	if not is_on_floor():
 		velocity.y += gravity * delta
-		if velocity.y >= 0:
-			is_landing = true
-	if is_landing:
-		reset_animation()
-		animations["jump_end"] = true
-		is_landing = false
+
+
 	handle_input()
 	handle_actions()
 	handle_release()
@@ -58,7 +55,8 @@ func handle_release():
 		is_crouching = false
 	if Input.is_action_just_released("left") || Input.is_action_just_released("right"):
 		velocity.x = move_toward(velocity.x, 0, brake_speed)
-		if !velocity.x && is_on_floor():
+		#if !velocity.x && is_on_floor():
+		if !velocity.x:
 			reset_animation()
 			animations["idle"] = true
 	
@@ -108,6 +106,9 @@ func handle_jump():
 	if !is_crouching:
 		if is_on_floor():
 			velocity.y = jump_velocity
+			reset_animation()
+			animations["jump_start"] = true
+
 		elif !is_on_floor() && air_jump_current:
 			velocity.y = jump_velocity
 			air_jump_current -= 1
