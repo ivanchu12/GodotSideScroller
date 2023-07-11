@@ -1,0 +1,149 @@
+[gd_scene load_steps=17 format=3 uid="uid://cvvifpqhy8uji"]
+
+[ext_resource type="Texture2D" uid="uid://cscodgmhkv6x8" path="res://Legacy-Fantasy - High Forest 2.3/Mob/Boar/boar-sheet.png" id="1_q5yei"]
+
+[sub_resource type="GDScript" id="GDScript_xoi1u"]
+script/source = "extends CharacterBody2D
+
+@export var speed = 100.0
+@onready var animation_tree = $AnimationTree
+@onready var animation_player = $AnimationPlayer
+
+var counter = 0
+var gravity = ProjectSettings.get_setting(\"physics/2d/default_gravity\")
+
+func _ready():
+	animation_tree.active = true
+	
+
+func _physics_process(delta):
+	counter += delta
+	
+	if not is_on_floor():
+		velocity.y += gravity * delta
+	if counter > 2 && counter< 5:
+		animation_player.play(\"idle_right\")
+	elif counter > 5:
+		animation_player.play(\"idle_left\")
+	else:
+		animation_player.play(\"idle_left\")
+	#handle_idle_movement()
+	move_and_slide()
+
+func handle_idle_movement():
+	velocity.x = 1 * speed
+	
+func handle_animations():
+	animation_tree[\"parameters/conditions/idle\"] = true
+	
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_eolxv"]
+radius = 13.0
+
+[sub_resource type="Animation" id="Animation_b0s6d"]
+resource_name = "idle_left"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [12, 13, 14, 15]
+}
+
+[sub_resource type="Animation" id="Animation_6h6ts"]
+resource_name = "idle_right"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [12, 13, 14, 15]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_u3upf"]
+_data = {
+"idle_left": SubResource("Animation_b0s6d"),
+"idle_right": SubResource("Animation_6h6ts")
+}
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_brtgn"]
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_wkg1v"]
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_4vc05"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2dcnl"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bxp7q"]
+advance_mode = 2
+advance_condition = &"walk"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5tj12"]
+advance_mode = 2
+advance_condition = &"idle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_huj40"]
+advance_mode = 2
+advance_condition = &"run"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_t42e4"]
+advance_mode = 2
+advance_condition = &"idle"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_h0x1h"]
+states/End/position = Vector2(789, 99)
+states/Run/node = SubResource("AnimationNodeBlendSpace2D_brtgn")
+states/Run/position = Vector2(426, -9.08773)
+states/Start/position = Vector2(176, 99)
+states/Walk/node = SubResource("AnimationNodeBlendSpace2D_wkg1v")
+states/Walk/position = Vector2(510, 99)
+states/idle/node = SubResource("AnimationNodeBlendSpace2D_4vc05")
+states/idle/position = Vector2(343, 99)
+transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_2dcnl"), "idle", "Walk", SubResource("AnimationNodeStateMachineTransition_bxp7q"), "Walk", "idle", SubResource("AnimationNodeStateMachineTransition_5tj12"), "idle", "Run", SubResource("AnimationNodeStateMachineTransition_huj40"), "Run", "idle", SubResource("AnimationNodeStateMachineTransition_t42e4")]
+graph_offset = Vector2(-35, -42.0877)
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_pjerd"]
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+script = SubResource("GDScript_xoi1u")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_eolxv")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1, -3)
+scale = Vector2(0.791667, 0.828125)
+texture = ExtResource("1_q5yei")
+hframes = 6
+vframes = 3
+frame = 12
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_u3upf")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeStateMachine_h0x1h")
+anim_player = NodePath("../AnimationPlayer")
+parameters/playback = SubResource("AnimationNodeStateMachinePlayback_pjerd")
+parameters/conditions/idle = false
+parameters/conditions/run = false
+parameters/conditions/walk = false
+parameters/Run/blend_position = Vector2(0, 0)
+parameters/Walk/blend_position = Vector2(0, 0)
+parameters/idle/blend_position = Vector2(0.9904, 0.0299401)
