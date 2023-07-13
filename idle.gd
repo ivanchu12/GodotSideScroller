@@ -1,7 +1,7 @@
 extends base_state
 
 func enter():
-	animation_cond = "parameters/conditions/idle"
+	animation_cond = "idle"
 	super()
 	player.air_jump_current = player.air_jump_total
 

@@ -1,7 +1,7 @@
 class_name base_state
 extends Node
 
-var animation_cond = "parameters/conditions/idle"
+var animation_cond = "idle"
 var animation_speed = 1
 
 
@@ -19,11 +19,11 @@ var player: CharacterBody2D
 
 func enter():
 	player.sprite.offset = Vector2(0,0) 
-	player.animation_player = animation_speed
-	player.animation_tree[animation_cond] = true
+	player.animation_player.speed_scale = animation_speed
+	player.animation_player.play(animation_cond)
 	
 func exit():
-	player.animation_tree[animation_cond] = false
+	pass
 
 func input(event: InputEvent):
 	return states.Null

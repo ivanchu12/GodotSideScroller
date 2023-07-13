@@ -1,7 +1,7 @@
 extends base_state
 
 func enter():
-	animation_cond = "parameters/conditions/jump_end"
+	animation_cond = "jump_end"
 	animation_speed = 1.5
 	super()
 	

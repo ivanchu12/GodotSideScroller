@@ -1,7 +1,7 @@
 extends base_state
 
 func enter():
-	animation_cond = "parameters/conditions/run"
+	animation_cond = "run"
 	animation_speed = 2
 	super()
 	player.air_jump_current = player.air_jump_total

@@ -16,9 +16,8 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 @onready var air_jump_current = air_jump_total
 
 func _ready():
-	animation_tree.active = true
 	state_manager.init(self)
-	state_manager.change_state(base_state.states.idle)
+	state_manager.change_state(base_state.states.fall)
 	
 func _physics_process(delta):
 	state_manager.physics_process(delta)
