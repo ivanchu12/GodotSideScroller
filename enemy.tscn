@@ -1,49 +1,15 @@
-[gd_scene load_steps=17 format=3 uid="uid://cvvifpqhy8uji"]
+[gd_scene load_steps=21 format=3 uid="uid://8ybfu5p65ow8"]
 
+[ext_resource type="Script" path="res://Scripts/enemy.gd" id="1_pyjpf"]
 [ext_resource type="Texture2D" uid="uid://cscodgmhkv6x8" path="res://Legacy-Fantasy - High Forest 2.3/Mob/Boar/boar-sheet.png" id="1_q5yei"]
-
-[sub_resource type="GDScript" id="GDScript_xoi1u"]
-script/source = "extends CharacterBody2D
-
-@export var speed = 100.0
-@onready var animation_tree = $AnimationTree
-@onready var animation_player = $AnimationPlayer
-
-var counter = 0
-var gravity = ProjectSettings.get_setting(\"physics/2d/default_gravity\")
-
-func _ready():
-	animation_tree.active = true
-	
-
-func _physics_process(delta):
-	counter += delta
-	
-	if not is_on_floor():
-		velocity.y += gravity * delta
-	if counter > 2 && counter< 5:
-		animation_player.play(\"idle_right\")
-	elif counter > 5:
-		animation_player.play(\"idle_left\")
-	else:
-		animation_player.play(\"idle_left\")
-	#handle_idle_movement()
-	move_and_slide()
-
-func handle_idle_movement():
-	velocity.x = 1 * speed
-	
-func handle_animations():
-	animation_tree[\"parameters/conditions/idle\"] = true
-	
-"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_eolxv"]
 radius = 13.0
 
 [sub_resource type="Animation" id="Animation_b0s6d"]
-resource_name = "idle_left"
+resource_name = "idle"
 length = 0.8
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -57,9 +23,10 @@ tracks/0/keys = {
 "values": [12, 13, 14, 15]
 }
 
-[sub_resource type="Animation" id="Animation_6h6ts"]
-resource_name = "idle_right"
-length = 0.8
+[sub_resource type="Animation" id="Animation_ypmck"]
+resource_name = "run"
+length = 1.2
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -67,23 +34,59 @@ tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [12, 13, 14, 15]
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_e3tjy"]
+resource_name = "walk"
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [6, 7, 8, 9, 10, 11]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_u3upf"]
 _data = {
-"idle_left": SubResource("Animation_b0s6d"),
-"idle_right": SubResource("Animation_6h6ts")
+"idle": SubResource("Animation_b0s6d"),
+"run": SubResource("Animation_ypmck"),
+"walk": SubResource("Animation_e3tjy")
 }
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ktu8j"]
+animation = &"run"
+
 [sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_brtgn"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_ktu8j")
+blend_point_0/pos = Vector2(0.5, 0)
+blend_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_yy7gm"]
+animation = &"walk"
 
 [sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_wkg1v"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_yy7gm")
+blend_point_0/pos = Vector2(0.5, 0)
+blend_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0ntw4"]
+animation = &"idle"
 
 [sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_4vc05"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_0ntw4")
+blend_point_0/pos = Vector2(0.5, 0)
+blend_mode = 1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2dcnl"]
 advance_mode = 2
@@ -119,7 +122,7 @@ graph_offset = Vector2(-35, -42.0877)
 [sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_pjerd"]
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
-script = SubResource("GDScript_xoi1u")
+script = ExtResource("1_pyjpf")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_eolxv")
@@ -130,7 +133,7 @@ scale = Vector2(0.791667, 0.828125)
 texture = ExtResource("1_q5yei")
 hframes = 6
 vframes = 3
-frame = 12
+frame = 6
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -146,4 +149,8 @@ parameters/conditions/run = false
 parameters/conditions/walk = false
 parameters/Run/blend_position = Vector2(0, 0)
 parameters/Walk/blend_position = Vector2(0, 0)
-parameters/idle/blend_position = Vector2(0.9904, 0.0299401)
+parameters/idle/blend_position = Vector2(0.9968, 0.005988)
+
+[node name="Timer" type="Timer" parent="."]
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
