@@ -2,7 +2,7 @@ extends base_state
 
 
 func enter():
-	animation_cond = "jump"
+	animation_name = "jump"
 	animation_speed = 2
 	super()
 	player.velocity.y = player.jump_speed

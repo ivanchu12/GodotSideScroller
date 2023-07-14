@@ -1,7 +1,7 @@
 extends base_state
 
 func enter():
-	animation_cond = "run"
+	animation_name = "run"
 	animation_speed = 2
 	super()
 	player.air_jump_current = player.air_jump_total
@@ -9,6 +9,8 @@ func enter():
 func input(event: InputEvent):
 	if event.is_action_pressed("jump"):
 		return states.jump
+	if event.is_action_pressed("crouch"):
+		return states.crouch
 	return states.Null
 		
 func physics_process(delta: float):

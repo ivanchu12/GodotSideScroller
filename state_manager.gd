@@ -5,7 +5,9 @@ extends Node
 	base_state.states.run: $run,
 	base_state.states.fall: $fall,
 	base_state.states.landing: $landing,
-	base_state.states.jump: $jump
+	base_state.states.jump: $jump,
+	base_state.states.crouch: $crouch,
+	base_state.states.crouch_jump: $crouch_jump
 }
 
 var current_state
@@ -21,7 +23,7 @@ func init(player):
 		child.player = player
 		
 func physics_process(delta):
-	var new_state = current_state.physics_process(delta)
+	var new_state = await current_state.physics_process(delta)
 	if new_state != base_state.states.Null:
 		change_state(new_state)
 		
