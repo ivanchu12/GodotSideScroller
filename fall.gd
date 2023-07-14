@@ -1,7 +1,7 @@
 extends base_state
 
 func enter():
-	animation_cond = "fall"
+	animation_name = "fall"
 	super()
 	
 func input(event):

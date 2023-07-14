@@ -4,6 +4,7 @@ class_name Player
 @export var speed = 400.0
 @export var brake_speed = 400
 @export var jump_speed = -400.0
+
 @onready var state_manager = $state_manager
 @onready var sprite = $Sprite
 @onready var animation_player = $AnimationPlayer
@@ -18,6 +19,7 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 func _ready():
 	state_manager.init(self)
 	state_manager.change_state(base_state.states.fall)
+	crouching_collision.disabled = true
 	
 func _physics_process(delta):
 	state_manager.physics_process(delta)

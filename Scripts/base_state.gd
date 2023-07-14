@@ -1,7 +1,7 @@
 class_name base_state
 extends Node
 
-var animation_cond = "idle"
+var animation_name = "idle"
 var animation_speed = 1
 
 
@@ -12,7 +12,8 @@ enum states {
 	jump,
 	fall,
 	crouch,
-	landing
+	landing,
+	crouch_jump
 }
 
 var player: CharacterBody2D
@@ -20,7 +21,7 @@ var player: CharacterBody2D
 func enter():
 	player.sprite.offset = Vector2(0,0) 
 	player.animation_player.speed_scale = animation_speed
-	player.animation_player.play(animation_cond)
+	player.animation_player.play(animation_name)
 	
 func exit():
 	pass
