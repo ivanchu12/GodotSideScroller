@@ -260,6 +260,7 @@ texture = ExtResource("2_31qif")
 offset = Vector2(5, -2)
 hframes = 8
 vframes = 4
+frame = 20
 
 [node name="StandingHitBox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 1)
